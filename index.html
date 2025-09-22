@@ -308,115 +308,115 @@ input.error, textarea.error {
   </div>
 
   <script>
-    // >>>> CONFIGURE AQUI o endpoint do seu Apps Script (ver instruções no chat)
-    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbw1rtOKbAi9xx54OfgccnJUZ6wAVHSNlXPxtClVKfqUnfOiSfvAVf5hvO5wpMB1iGQk/exec"; // substitua após publicar
+  // sua URL correta aqui (global)
+  const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbw1rtOKbAi9xx54OfgccnJUZ6wAVHSNlXPxtClVKfqUnfOiSfvAVf5hvO5wpMB1iGQk/exec";
 
-    function coletarRespostas(){
-      const nome = document.getElementById('nome').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const detalhes = Array.from(document.querySelectorAll('details'));
-      const respostas = detalhes.map((det,i)=>{
-        const tag = det.querySelector('summary .tag')?.textContent?.trim() || `Bloco ${i+1}`;
-        const resp = (det.querySelector('.answer-box textarea')?.value || '').trim();
-        return { tag, resposta: resp };
-      });
-      return { nome, email, respostas };
-    }
+  function coletarRespostas(){
+    const nome = document.getElementById('nome').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const detalhes = Array.from(document.querySelectorAll('details'));
+    const respostas = detalhes.map((det,i)=>{
+      const tag = det.querySelector('summary .tag')?.textContent?.trim() || `Bloco ${i+1}`;
+      const resp = (det.querySelector('.answer-box textarea')?.value || '').trim();
+      return { tag, resposta: resp };
+    });
+    return { nome, email, respostas };
+  }
 
   async function enviarRespostas(ev) {
-  ev.preventDefault();
-  const form = document.getElementById('atividade-form');
-  const status = document.getElementById('status-msg');
-  const submitBtn = form.querySelector('button[type="submit"]');
+    ev.preventDefault();
+    const form = document.getElementById('atividade-form');
+    const status = document.getElementById('status-msg');
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-  // limpa mensagens e erros
-  status.textContent = "";
-  status.className = "msg";
-  document.querySelectorAll("input, textarea").forEach(el => el.classList.remove("error"));
+    // limpa mensagens e erros
+    status.textContent = "";
+    status.className = "msg";
+    document.querySelectorAll("input, textarea").forEach(el => el.classList.remove("error"));
 
-  // coleta
-  const nomeEl = document.getElementById('nome');
-  const emailEl = document.getElementById('email');
-  const textareas = Array.from(document.querySelectorAll('.resp'));
+    // coleta
+    const nomeEl = document.getElementById('nome');
+    const emailEl = document.getElementById('email');
+    const textareas = Array.from(document.querySelectorAll('.resp'));
 
-  const nome = (nomeEl.value || "").trim();
-  const email = (emailEl.value || "").trim();
+    const nome = (nomeEl.value || "").trim();
+    const email = (emailEl.value || "").trim();
 
-  let erro = false;
-  let primeiroErro = null;
+    let erro = false;
+    let primeiroErro = null;
 
-  // valida nome/email
-  if (!nome) { nomeEl.classList.add('error'); erro = true; primeiroErro ||= nomeEl; }
-  if (!email) { emailEl.classList.add('error'); erro = true; primeiroErro ||= emailEl; }
+    // valida nome/email
+    if (!nome) { nomeEl.classList.add('error'); erro = true; primeiroErro ||= nomeEl; }
+    if (!email) { emailEl.classList.add('error'); erro = true; primeiroErro ||= emailEl; }
 
-  // valida TODAS as respostas (mín. 3 caracteres)
-  let faltando = 0;
-  textareas.forEach((t) => {
-    const ok = (t.value || "").trim().length >= 3;
-    if (!ok) {
-      t.classList.add('error');
-      erro = true;
-      faltando++;
-      primeiroErro ||= t;
+    // valida TODAS as respostas (mín. 3 caracteres)
+    let faltando = 0;
+    textareas.forEach((t) => {
+      const ok = (t.value || "").trim().length >= 3;
+      if (!ok) {
+        t.classList.add('error');
+        erro = true;
+        faltando++;
+        primeiroErro ||= t;
+      }
+    });
+
+    if (erro) {
+      status.textContent = `⚠️ Preencha todos os campos. (${faltando} resposta(s) faltando)`;
+      status.className = "fail-msg";
+      if (primeiroErro?.scrollIntoView) {
+        primeiroErro.scrollIntoView({ behavior: "smooth", block: "center" });
+        primeiroErro.focus();
+      }
+      return false;
     }
-  });
 
-  if (erro) {
-    status.textContent = `⚠️ Preencha todos os campos. (${faltando} resposta(s) faltando)`;
-    status.className = "fail-msg";
-    if (primeiroErro && typeof primeiroErro.scrollIntoView === "function") {
-      primeiroErro.scrollIntoView({ behavior: "smooth", block: "center" });
-      primeiroErro.focus();
+    // monta payload
+    const detalhes = Array.from(document.querySelectorAll('details'));
+    const respostas = detalhes.map((det, i) => {
+      const tag = det.querySelector('summary .tag')?.textContent?.trim() || `Bloco ${i+1}`;
+      const resp = (det.querySelector('.answer-box textarea')?.value || '').trim();
+      return { tag, resposta: resp };
+    });
+    const payload = { nome, email, respostas };
+
+    // envia
+    try {
+      if (!ENDPOINT_URL) {
+        status.textContent = "❌ Endpoint vazio. Configure a URL /exec.";
+        status.className = "fail-msg";
+        return false;
+      }
+      submitBtn.disabled = true;
+      status.textContent = "Enviando...";
+      status.className = "msg";
+
+      await fetch(ENDPOINT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      status.textContent = "✅ Respostas enviadas com sucesso!";
+      status.className = "success-msg";
+      form.reset();
+    } catch (err) {
+      status.textContent = "❌ Falha ao enviar. Revise o endpoint.";
+      status.className = "fail-msg";
+    } finally {
+      submitBtn.disabled = false;
     }
     return false;
   }
 
-  // monta payload
-  const detalhes = Array.from(document.querySelectorAll('details'));
-  const respostas = detalhes.map((det, i) => {
-    const tag = det.querySelector('summary .tag')?.textContent?.trim() || `Bloco ${i+1}`;
-    const resp = (det.querySelector('.answer-box textarea')?.value || '').trim();
-    return { tag, resposta: resp };
-  });
-  const payload = { nome, email, respostas };
-
-  // envia
-  try {
-    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbw1rtOKbAi9xx54OfgccnJUZ6wAVHSNlXPxtClVKfqUnfOiSfvAVf5hvO5wpMB1iGQk/exec"; // garanta que está correto!
-    if (!ENDPOINT_URL) {
-      status.textContent = "❌ Endpoint vazio. Configure a URL /exec.";
-      status.className = "fail-msg";
-      return false;
-    }
-    submitBtn.disabled = true;
-    status.textContent = "Enviando...";
-    status.className = "msg";
-
-    await fetch(ENDPOINT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+  // reforço nativo
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.resp').forEach(t => {
+      t.setAttribute('required', '');
+      t.setAttribute('minlength', '3');
     });
-
-    status.textContent = "✅ Respostas enviadas com sucesso!";
-    status.className = "success-msg";
-    form.reset();
-  } catch (err) {
-    status.textContent = "❌ Falha ao enviar. Revise o endpoint.";
-    status.className = "fail-msg";
-  } finally {
-    submitBtn.disabled = false;
-  }
-  return false;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.resp').forEach(t => {
-    t.setAttribute('required', '');
-    t.setAttribute('minlength', '3');
   });
-});
   </script>
 </body>
 </html>
