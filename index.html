@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Atividade — Tags HTML + CSS (código, links e respostas dos alunos)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#0b0c10; --panel:#111216; --muted:#7b8493; --text:#e9eef7; --accent:#38bdf8; --code:#0d1017; --line:#1e2230}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:linear-gradient(180deg,#0a0b0e,#0f1117);color:var(--text);font:16px/1.5 "Inter",system-ui,sans-serif}
+    .wrap{max-width:1100px;margin:40px auto;padding:0 20px}
+    h1{font-size:clamp(1.4rem,2.5vw,1.9rem);margin:0 0 6px;font-weight:800}
+    p.lead{margin:0 0 24px;color:var(--muted)}
+    .legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 24px}
+    .legend span{background:var(--panel);border:1px solid var(--line);padding:10px;border-radius:12px;text-align:center}
+
+    details{background:var(--panel);border:1px solid var(--line);border-radius:18px;margin:14px 0;overflow:hidden}
+    details[open]{box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    summary{cursor:pointer;list-style:none;padding:16px 18px;display:flex;align-items:center;gap:10px;font-weight:700}
+    summary::marker{display:none}
+    summary .tag{display:inline-block;background:#0a0f14;border:1px solid var(--line);color:#a2e3ff;padding:2px 8px;border-radius:999px;font:600 12px/1 "Inter"}
+    .card{padding:0 18px 18px}
+
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    @media (max-width:860px){.two-col{grid-template-columns:1fr}}
+
+    pre{background:var(--code);border:1px solid #161a24;border-radius:14px;padding:14px;overflow:auto}
+    code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.95rem}
+
+    .thumb-box{border:1px dashed #2a3245;border-radius:14px;padding:14px;min-height:160px;background:linear-gradient(180deg,#0a0d13,#0b0e14)}
+    .thumb-box h4{margin:0 0 6px;font-size:1rem}
+    .thumb-box p{margin:0 0 10px;color:var(--muted)}
+    .thumb-box a{display:inline-block;padding:10px 12px;border-radius:10px;background:var(--accent);color:#00111a;text-decoration:none;font-weight:700}
+    .thumb-box a:hover{filter:brightness(.95)}
+
+    .hint{color:var(--muted);font-size:.92rem;margin-top:8px}
+
+    /* Campos de resposta */
+    .answer-box{border:1px solid var(--line);background:rgba(56,189,248,.06);padding:14px;border-radius:14px;margin-top:12px}
+    .answer-box label{display:block;font-weight:700;margin:0 0 8px}
+    .input-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0 18px}
+    .input-grid input{width:100%;padding:10px 12px;border-radius:10px;border:1px solid #2a3245;background:#0c111a;color:var(--text)}
+    textarea{width:100%;padding:12px;border-radius:12px;border:1px solid #2a3245;background:#0c111a;color:var(--text);min-height:110px}
+
+    .submit-bar{position:sticky;bottom:0;z-index:5;background:linear-gradient(180deg,rgba(15,17,23,.2),rgba(15,17,23,.9));backdrop-filter:blur(4px);border-top:1px solid #1e2230;padding:14px;border-radius:14px;margin-top:18px;display:flex;gap:10px;align-items:center}
+    .submit-bar button{appearance:none;border:0;background:var(--accent);color:#021018;font-weight:800;padding:12px 16px;border-radius:12px;cursor:pointer}
+    .submit-bar .msg{color:var(--muted)}
+
+    /* Borda vermelha em campos obrigatórios vazios */
+input.error, textarea.error {
+  border: 2px solid #e74c3c !important; /* vermelho */
+  background: #2a0d0d !important;
+}
+.success-msg {
+  color: #4ade80; /* verde */
+  font-weight: 700;
+  margin-left: 10px;
+}
+.fail-msg {
+  color: #f87171; /* vermelho */
+  font-weight: 700;
+  margin-left: 10px;
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Atividade — Tags HTML + CSS</h1>
+    <p class="lead">Preencha seu <strong>nome</strong> e <strong>e-mail</strong>, escreva o <strong>significado</strong> de cada tag nos campos abaixo e clique em <em>Enviar</em> para salvar no Google Sheets.</p>
+
+    <div class="legend"><span>◀️ Código</span><span>▶️ Link para print</span></div>
+
+    <form id="atividade-form" onsubmit="return enviarRespostas(event)">
+      <div class="answer-box">
+        <label>Identificação do aluno</label>
+        <div class="input-grid">
+          <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+          <input type="email" id="email" name="email" placeholder="Seu e-mail institucional" required>
+        </div>
+        <p class="hint">Preencha nome e e-mail antes de responder os significados.</p>
+      </div>
+
+      <!-- 1. HEADER + ARTICLE -->
+      <details open>
+        <summary><span class="tag">&lt;header&gt; + &lt;article&gt;</span> Estrutura de topo e conteúdo principal (blog/portal)</summary>
+        <div class="card two-col">
+          <pre><code>&lt;header class="site-header"&gt;
+  &lt;h1&gt;Clínica Exemplo&lt;/h1&gt;
+  &lt;nav&gt;
+    &lt;a href="#servicos"&gt;Serviços&lt;/a&gt;
+    &lt;a href="#artigos"&gt;Artigos&lt;/a&gt;
+    &lt;a href="#contato"&gt;Contato&lt;/a&gt;
+  &lt;/nav&gt;
+&lt;/header&gt;
+
+&lt;main&gt;
+  &lt;article&gt;
+    &lt;h2&gt;Check-up do idoso: principais exames&lt;/h2&gt;
+    &lt;p&gt;Resumo introdutório do artigo...&lt;/p&gt;
+  &lt;/article&gt;
+&lt;/main&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de um artigo real</h4>
+            <p>Use um post de blog/saúde com header e artigo.</p>
+            <a href="https://clinicaads.com.br/check-up-do-idoso-principais-exames-para-a-melhor-idade/" target="_blank" rel="noopener">Abrir Exemplo 1</a>
+            <div class="hint">Procure o &lt;header&gt; no topo e o &lt;article&gt; no conteúdo.</div>
+          </div>
+        </div>
+        <div class="answer-box">
+          <label>Significado das tag(s) apresentadas acima</label>
+          <textarea class="resp" placeholder="Explique com suas palavras o que essa(s) tag(s) significa(m) e quando usar."></textarea>
+        </div>
+      </details>
+
+      <!-- 2. ASIDE -->
+      <details>
+        <summary><span class="tag">&lt;aside&gt;</span> Conteúdo complementar (promo, chamada lateral)</summary>
+        <div class="card two-col">
+          <pre><code>&lt;main class="grid"&gt;
+  &lt;section&gt;
+    &lt;h2&gt;Post principal&lt;/h2&gt;
+    &lt;p&gt;Texto do post...&lt;/p&gt;
+  &lt;/section&gt;
+  &lt;aside&gt;
+    &lt;p&gt;&lt;strong&gt;Cashback 15%&lt;/strong&gt; com Cartões X.&lt;/p&gt;
+    &lt;a class="btn" href="#"&gt;Saiba mais&lt;/a&gt;
+  &lt;/aside&gt;
+&lt;/main&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print com promoção lateral</h4>
+            <p>Um post/redes com destaque de oferta é um bom paralelo de &lt;aside&gt;.</p>
+            <a href="https://www.threads.com/@lojasrenner/post/DCCgIRqxoyh/descontos-cashback-%EF%B8%8F-com-cart%C3%B5es-renner-vcs-garantem-15-de-cashback-para-usar-co" target="_blank" rel="noopener">Abrir Exemplo 2</a>
+            <div class="hint">Assim como uma barra lateral de oferta ao lado do conteúdo.</div>
+          </div>
+        </div>
+        <div class="answer-box">
+          <label>Significado das tag(s) apresentadas acima</label>
+          <textarea class="resp"></textarea>
+        </div>
+      </details>
+
+      <!-- 3. FIGURE + FIGCAPTION -->
+      <details>
+        <summary><span class="tag">&lt;figure&gt; + &lt;figcaption&gt;</span> Mídia com legenda</summary>
+        <div class="card two-col">
+          <pre><code>&lt;figure&gt;
+  &lt;img src="foto.jpg" alt="Descrição da imagem" width="640" height="360"&gt;
+  &lt;figcaption&gt;Legenda descrevendo a imagem/post.&lt;/figcaption&gt;
+&lt;/figure&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de mídia com legenda</h4>
+            <p>Posts do Instagram são ótimos para associar imagem + legenda.</p>
+            <a href="https://www.instagram.com/p/CQgXI7RtdIs/" target="_blank" rel="noopener">Abrir Exemplo 3</a>
+            <div class="hint">A legenda do post equivale ao &lt;figcaption&gt;.</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <!-- 4. BUTTON + A -->
+      <details>
+        <summary><span class="tag">&lt;button&gt; + &lt;a&gt;</span> Ações e links (download/instalar)</summary>
+        <div class="card two-col">
+          <pre><code>&lt;a class="store" href="#" role="button"&gt;Instalar&lt;/a&gt;
+&lt;!-- ou --&gt;
+&lt;button type="button" class="primary"&gt;Baixar aplicativo&lt;/button&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de CTA de instalação</h4>
+            <p>Páginas de app store exibem botões de ação.</p>
+            <a href="https://play.google.com/store/apps/details?id=br.com.brainweb.ifood&pli=1" target="_blank" rel="noopener">Abrir Exemplo 4</a>
+            <div class="hint">Procure o botão de instalar (CTA).</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <!-- 5. ARTICLE -->
+      <details>
+        <summary><span class="tag">&lt;article&gt;</span> Conteúdo independente (matéria/notícia)</summary>
+        <div class="card two-col">
+          <pre><code>&lt;article&gt;
+  &lt;header&gt;
+    &lt;h1&gt;Título da matéria&lt;/h1&gt;
+    &lt;p class="meta"&gt;Por Redação • 2025-07-09&lt;/p&gt;
+  &lt;/header&gt;
+  &lt;p&gt;Texto da notícia...&lt;/p&gt;
+&lt;/article&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de uma matéria</h4>
+            <p>Notícia/artigo com título, autoria e corpo.</p>
+            <a href="https://www.goodnewsnetwork.org/cardboard-steering-wheel-and-vinyl-stickers-will-allow-children-to-pretend-to-drive-new-london-driverless-trains/" target="_blank" rel="noopener">Abrir Exemplo 5</a>
+            <div class="hint">O bloco central da matéria é o &lt;article&gt;.</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <!-- 6. IMG + PICTURE -->
+      <details>
+        <summary><span class="tag">&lt;img&gt; + &lt;picture&gt;</span> Imagens responsivas</summary>
+        <div class="card two-col">
+          <pre><code>&lt;picture&gt;
+  &lt;source media="(min-width: 800px)" srcset="banner-desktop.jpg"&gt;
+  &lt;source media="(max-width: 799px)" srcset="banner-mobile.jpg"&gt;
+  &lt;img src="banner-desktop.jpg" alt="Banner do post"&gt;
+&lt;/picture&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de imagem em destaque</h4>
+            <p>Posts com imagem hero se encaixam aqui.</p>
+            <a href="https://www.instagram.com/p/DAjnQKNv-kP/" target="_blank" rel="noopener">Abrir Exemplo 6</a>
+            <div class="hint">A foto principal do post é o &lt;img&gt;.</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <!-- 7. SECTION + H2 -->
+      <details>
+        <summary><span class="tag">&lt;section&gt;</span> Seção temática com subtítulo</summary>
+        <div class="card two-col">
+          <pre><code>&lt;section aria-labelledby="t1"&gt;
+  &lt;h2 id="t1"&gt;Último show da turnê&lt;/h2&gt;
+  &lt;p&gt;Detalhes da seção com contexto...&lt;/p&gt;
+&lt;/section&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de uma seção</h4>
+            <p>Matérias segmentadas por subtítulos refletem &lt;section&gt;.</p>
+            <a href="https://portalpopline.com.br/sandy-vai-receber-tiago-iorc-e-luan-santana-no-ultimo-show-da-turne-meu-canto/" target="_blank" rel="noopener">Abrir Exemplo 7</a>
+            <div class="hint">Veja um subtítulo (&lt;h2&gt;) delimitando o bloco.</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <!-- 8. UL + LI -->
+      <details>
+        <summary><span class="tag">&lt;ul&gt; + &lt;li&gt;</span> Listas de itens (categorias/produtos)</summary>
+        <div class="card two-col">
+          <pre><code>&lt;ul class="prod-list" role="list"&gt;
+  &lt;li&gt;Abajur de mesa&lt;/li&gt;
+  &lt;li&gt;Luminária de chão&lt;/li&gt;
+  &lt;li&gt;Pendente&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de uma lista</h4>
+            <p>Página de categorias com itens listados.</p>
+            <a href="https://www.divinoespaco.com.br/decoracao/abat-jour-e-luminarias" target="_blank" rel="noopener">Abrir Exemplo 8</a>
+            <div class="hint">Cada card/item corresponde a um &lt;li&gt; conceitual.</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <!-- 9. FORM + LABEL + INPUT -->
+      <details>
+        <summary><span class="tag">&lt;form&gt; + &lt;label&gt; + &lt;input&gt;</span> Campos de compra/busca/aviso</summary>
+        <div class="card two-col">
+          <pre><code>&lt;form action="/buscar" method="get" class="prod-form"&gt;
+  &lt;label for="q"&gt;Buscar produto:&lt;/label&gt;
+  &lt;input id="q" name="q" type="search" placeholder="Esmalte, perfume..." required&gt;
+  &lt;button type="submit"&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de formulário/compra</h4>
+            <p>Página de produto tem campos/botões de compra.</p>
+            <a href="https://www.drogariaspacheco.com.br/esmalte-secante-risque-care-express-8ml/p" target="_blank" rel="noopener">Abrir Exemplo 9</a>
+            <div class="hint">Veja campo de quantidade, CEP, etc. como &lt;input&gt;.</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <!-- 10. NAV + FOOTER -->
+      <details>
+        <summary><span class="tag">&lt;nav&gt; + &lt;footer&gt;</span> Navegação do site e rodapé</summary>
+        <div class="card two-col">
+          <pre><code>&lt;nav aria-label="principal" class="site-nav"&gt;
+  &lt;a href="/noticias" class="active"&gt;Notícias&lt;/a&gt;
+  &lt;a href="/esportes"&gt;Esportes&lt;/a&gt;
+  &lt;a href="/contato"&gt;Contato&lt;/a&gt;
+&lt;/nav&gt;
+
+&lt;footer class="site-footer"&gt;
+  &lt;p&gt;&copy; 2025 Meu Portal.&lt;/p&gt;
+&lt;/footer&gt;</code></pre>
+          <div class="thumb-box">
+            <h4>Capturar print de navegação/rodapé</h4>
+            <p>Portais de notícia mostram um &lt;nav&gt; robusto e rodapé completo.</p>
+            <a href="https://omunicipioblumenau.com.br/gustavo-siqueira-bodytech-inaugura-sua-primeira-unidade-em-blumenau/" target="_blank" rel="noopener">Abrir Exemplo 10</a>
+            <div class="hint">Identifique o menu superior e o rodapé da página.</div>
+          </div>
+        </div>
+        <div class="answer-box"><label>Significado das tag(s) apresentadas acima</label><textarea class="resp"></textarea></div>
+      </details>
+
+      <div class="submit-bar">
+        <button type="submit">Enviar respostas para o Sheets</button>
+        <span class="msg" id="status-msg">Nada enviado ainda.</span>
+      </div>
+    </form>
+
+    <p class="hint">Dica: abra o DevTools (F12) e use o inspetor para ver como o site real marca essas áreas. Compare com os exemplos de código.</p>
+  </div>
+
+  <script>
+    // >>>> CONFIGURE AQUI o endpoint do seu Apps Script (ver instruções no chat)
+    const ENDPOINT_URL = "https://script.google.com/macros/s/AKfycbw1rtOKbAi9xx54OfgccnJUZ6wAVHSNlXPxtClVKfqUnfOiSfvAVf5hvO5wpMB1iGQk/exec"; // substitua após publicar
+
+    function coletarRespostas(){
+      const nome = document.getElementById('nome').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const detalhes = Array.from(document.querySelectorAll('details'));
+      const respostas = detalhes.map((det,i)=>{
+        const tag = det.querySelector('summary .tag')?.textContent?.trim() || `Bloco ${i+1}`;
+        const resp = (det.querySelector('.answer-box textarea')?.value || '').trim();
+        return { tag, resposta: resp };
+      });
+      return { nome, email, respostas };
+    }
+
+    async function enviarRespostas(ev) {
+  ev.preventDefault();
+  const status = document.getElementById('status-msg');
+  const payload = coletarRespostas();
+
+  // reset estilos
+  document.querySelectorAll("input, textarea").forEach(el => el.classList.remove("error"));
+
+  let erro = false;
+
+  if (!payload.nome) {
+    document.getElementById("nome").classList.add("error");
+    erro = true;
+  }
+  if (!payload.email) {
+    document.getElementById("email").classList.add("error");
+    erro = true;
+  }
+
+  const textos = document.querySelectorAll(".resp");
+  let algumPreenchido = false;
+  textos.forEach(t => {
+    if (t.value.trim().length > 2) algumPreenchido = true;
+  });
+  if (!algumPreenchido) {
+    textos[0].classList.add("error");
+    erro = true;
+  }
+
+  if (erro) {
+    status.textContent = "⚠️ Preencha os campos obrigatórios.";
+    status.className = "fail-msg";
+    return false;
+  }
+
+  try {
+    const endpoint = getEndpoint();
+    if (!endpoint) {
+      status.textContent = "Cole a URL /exec do Apps Script na configuração.";
+      status.className = "fail-msg";
+      return false;
+    }
+
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    status.textContent = "✅ Respostas enviadas com sucesso!";
+    status.className = "success-msg";
+    document.getElementById("atividade-form").reset();
+  } catch (err) {
+    status.textContent = "❌ Falha ao enviar. Revise o endpoint.";
+    status.className = "fail-msg";
+  }
+  return false;
+}
+
+function getEndpoint(){ return ENDPOINT_URL.trim(); }
+
+
+  </script>
+</body>
+</html>
