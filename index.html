@@ -323,50 +323,76 @@ input.error, textarea.error {
       return { nome, email, respostas };
     }
 
-    async function enviarRespostas(ev) {
+  async function enviarRespostas(ev) {
   ev.preventDefault();
+  const form = document.getElementById('atividade-form');
   const status = document.getElementById('status-msg');
-  const payload = coletarRespostas();
+  const submitBtn = form.querySelector('button[type="submit"]');
 
-  // reset estilos
+  // limpa mensagens e erros
+  status.textContent = "";
+  status.className = "msg";
   document.querySelectorAll("input, textarea").forEach(el => el.classList.remove("error"));
 
+  // coleta
+  const nomeEl = document.getElementById('nome');
+  const emailEl = document.getElementById('email');
+  const textareas = Array.from(document.querySelectorAll('.resp'));
+
+  const nome = (nomeEl.value || "").trim();
+  const email = (emailEl.value || "").trim();
+
   let erro = false;
+  let primeiroErro = null;
 
-  if (!payload.nome) {
-    document.getElementById("nome").classList.add("error");
-    erro = true;
-  }
-  if (!payload.email) {
-    document.getElementById("email").classList.add("error");
-    erro = true;
-  }
+  // valida nome/email
+  if (!nome) { nomeEl.classList.add('error'); erro = true; primeiroErro ||= nomeEl; }
+  if (!email) { emailEl.classList.add('error'); erro = true; primeiroErro ||= emailEl; }
 
-  const textos = document.querySelectorAll(".resp");
-  let algumPreenchido = false;
-  textos.forEach(t => {
-    if (t.value.trim().length > 2) algumPreenchido = true;
+  // valida TODAS as respostas (mín. 3 caracteres)
+  let faltando = 0;
+  textareas.forEach((t) => {
+    const ok = (t.value || "").trim().length >= 3;
+    if (!ok) {
+      t.classList.add('error');
+      erro = true;
+      faltando++;
+      primeiroErro ||= t;
+    }
   });
-  if (!algumPreenchido) {
-    textos[0].classList.add("error");
-    erro = true;
-  }
 
   if (erro) {
-    status.textContent = "⚠️ Preencha os campos obrigatórios.";
+    status.textContent = `⚠️ Preencha todos os campos. (${faltando} resposta(s) faltando)`;
     status.className = "fail-msg";
+    if (primeiroErro && typeof primeiroErro.scrollIntoView === "function") {
+      primeiroErro.scrollIntoView({ behavior: "smooth", block: "center" });
+      primeiroErro.focus();
+    }
     return false;
   }
 
+  // monta payload
+  const detalhes = Array.from(document.querySelectorAll('details'));
+  const respostas = detalhes.map((det, i) => {
+    const tag = det.querySelector('summary .tag')?.textContent?.trim() || `Bloco ${i+1}`;
+    const resp = (det.querySelector('.answer-box textarea')?.value || '').trim();
+    return { tag, resposta: resp };
+  });
+  const payload = { nome, email, respostas };
+
+  // envia
   try {
-    const endpoint = getEndpoint();
-    if (!endpoint) {
-      status.textContent = "Cole a URL /exec do Apps Script na configuração.";
+    const ENDPOINT_URL = "https://script.google.com/macros/s/SEU_ID/exec"; // garanta que está correto!
+    if (!ENDPOINT_URL) {
+      status.textContent = "❌ Endpoint vazio. Configure a URL /exec.";
       status.className = "fail-msg";
       return false;
     }
+    submitBtn.disabled = true;
+    status.textContent = "Enviando...";
+    status.className = "msg";
 
-    await fetch(endpoint, {
+    await fetch(ENDPOINT_URL, {
       method: "POST",
       mode: "no-cors",
       headers: { "Content-Type": "application/json" },
@@ -375,17 +401,22 @@ input.error, textarea.error {
 
     status.textContent = "✅ Respostas enviadas com sucesso!";
     status.className = "success-msg";
-    document.getElementById("atividade-form").reset();
+    form.reset();
   } catch (err) {
     status.textContent = "❌ Falha ao enviar. Revise o endpoint.";
     status.className = "fail-msg";
+  } finally {
+    submitBtn.disabled = false;
   }
   return false;
 }
 
-function getEndpoint(){ return ENDPOINT_URL.trim(); }
-
-
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.resp').forEach(t => {
+    t.setAttribute('required', '');
+    t.setAttribute('minlength', '3');
+  });
+});
   </script>
 </body>
 </html>
